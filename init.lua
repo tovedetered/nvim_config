@@ -464,6 +464,7 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
@@ -685,6 +686,7 @@ require('lazy').setup({
             },
           },
         },
+        zls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -725,6 +727,7 @@ require('lazy').setup({
 
   { -- Autoformat
     'stevearc/conform.nvim',
+
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
     keys = {
@@ -755,7 +758,32 @@ require('lazy').setup({
           lsp_format = lsp_format_opt,
         }
       end,
+      formatters = {
+        superhtml = {
+          inherit = false,
+          command = 'superhtml',
+          stdin = true,
+          args = { 'fmt', '--stdin-super' },
+        },
+        ziggy = {
+          inherit = false,
+          command = 'ziggy',
+          stdin = true,
+          args = { 'fmt', '--stdin' },
+        },
+        ziggy_schema = {
+          inherit = false,
+          command = 'ziggy',
+          stdin = true,
+          args = { 'fmt', '--stdin-schema' },
+        },
+      },
+
       formatters_by_ft = {
+        shtml = { 'superhtml' },
+        ziggy = { 'ziggy' },
+        ziggy_schema = { 'ziggy_schema' },
+
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
@@ -889,11 +917,11 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    'ellisonleao/gruvbox.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
       ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
+      require('gruvbox').setup {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
@@ -902,7 +930,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'gruvbox'
     end,
   },
 
@@ -946,6 +974,14 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+    -- use opts = {} for passing setup options
+    -- this is equivalent to setup({}) function
+  },
+  { 'Civitasv/cmake-tools.nvim', opts = {} },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -985,7 +1021,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -1020,5 +1056,4 @@ require('lazy').setup({
   },
 })
 
--- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
