@@ -110,6 +110,19 @@ vim.opt.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+vim.api.nvim_create_autocmd({ 'BufNew', 'BufEnter' }, {
+  pattern = { '*.p8' },
+  callback = function(args)
+    vim.lsp.start {
+      name = 'pico8-ls',
+      cmd = { 'pico8-ls', '--stdio' },
+      root_dir = vim.fs.dirname(vim.api.nvim_buf_get_name(args.buf)),
+      -- Setup your keybinds in the on_attach function
+      on_attach = on_attach,
+    }
+  end,
+})
+
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -203,6 +216,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -263,6 +278,11 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
+  },
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim' },
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -659,7 +679,7 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -1006,6 +1026,12 @@ require('lazy').setup({
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  },
+  {
+    'bakudankun/pico-8.vim',
+    name = 'PICO-8',
+    -- lazy-load on filetype
+    ft = 'pico8',
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
