@@ -808,6 +808,7 @@ require('lazy').setup({
         ziggy_schema = { 'ziggy_schema' },
 
         lua = { 'stylua' },
+        cpp = { 'clang-format' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
