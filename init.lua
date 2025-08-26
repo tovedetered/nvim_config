@@ -779,6 +779,9 @@ require('lazy').setup({
         }
       end,
       formatters = {
+        ['clang-format'] = {
+          args = { '--style={BasedOnStyle: Google, IndentWidth: 4}' },
+        },
         superhtml = {
           inherit = false,
           command = 'superhtml',
